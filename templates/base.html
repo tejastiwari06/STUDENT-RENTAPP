@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Student Rent App{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: { DEFAULT: '#6366f1', light: '#818cf8', dark: '#4f46e5' },
+            surface: '#f8fafc'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface min-h-screen text-gray-800 antialiased">
+
+  <!-- ── Navbar ── -->
+  <nav class="bg-white border-b border-gray-100 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Logo -->
+      <a href="{{ url_for('index') if session.user else url_for('login') }}" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9.75L12 3l9 6.75V21a.75.75 0 01-.75.75H3.75A.75.75 0 013 21V9.75z"/><path stroke-linecap="round" stroke-linejoin="round" d="M9 21V12h6v9"/></svg>
+        </div>
+        <span class="font-bold text-lg tracking-tight text-gray-900 group-hover:text-indigo-600 transition">StudentRent</span>
+      </a>
+
+      <!-- Nav Links -->
+      <div class="flex items-center gap-1">
+        {% if session.user %}
+          <a href="{{ url_for('index') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition {% if request.path == '/' %}bg-indigo-50 text-indigo-600{% endif %}">
+            Post Request
+          </a>
+          <a href="{{ url_for('dashboard') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition {% if request.path == '/dashboard' %}bg-indigo-50 text-indigo-600{% endif %}">
+            Dashboard
+          </a>
+
+          <!-- User Menu -->
+          <div class="relative ml-2" id="user-menu-wrap">
+            <button onclick="toggleMenu()" class="flex items-center gap-2 pl-3 pr-4 py-2 rounded-xl border border-gray-100 hover:border-indigo-200 hover:bg-indigo-50 transition group" id="user-btn">
+              <div class="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
+                {{ session.user[0].upper() }}
+              </div>
+              <span class="text-sm font-medium text-gray-700 group-hover:text-indigo-700">{{ session.user }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <!-- Dropdown -->
+            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-52 bg-white border border-gray-100 rounded-xl shadow-lg py-1 z-50">
+              <div class="px-4 py-3 border-b border-gray-50">
+                <p class="text-xs text-gray-400">Signed in as</p>
+                <p class="text-sm font-semibold text-gray-800 truncate">{{ session.email or session.user }}</p>
+              </div>
+              <a href="{{ url_for('logout') }}" class="flex items-center gap-2 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                Sign Out
+              </a>
+            </div>
+          </div>
+
+        {% else %}
+          <a href="{{ url_for('login') }}" class="px-4 py-2 rounded-lg text-sm font-medium text-gray-600 hover:bg-indigo-50 hover:text-indigo-600 transition">
+            Log In
+          </a>
+          <a href="{{ url_for('register') }}" class="px-4 py-2 rounded-lg text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition">
+            Sign Up
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Flash Messages ── -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div id="flash-{{ loop.index }}" class="toast {% if category == 'error' %}toast-error{% else %}toast-success{% endif %}">
+          {{ message }}
+        </div>
+        <script>
+          setTimeout(() => {
+            const el = document.getElementById("flash-{{ loop.index }}");
+            if (el) el.style.animation = "slideIn 0.3s ease reverse forwards";
+            setTimeout(() => el && el.remove(), 300);
+          }, 3500);
+        </script>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- ── Page Content ── -->
+  <main class="max-w-6xl mx-auto px-4 py-8">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ── Footer ── -->
+  <footer class="border-t border-gray-100 bg-white mt-16">
+    <div class="max-w-6xl mx-auto px-4 py-5 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <p class="text-sm text-gray-400">© 2024 StudentRent — Connecting students, one rental at a time.</p>
+      <p class="text-xs text-gray-300">Powered by Flask · Firebase · Tailwind CSS</p>
+    </div>
+  </footer>
+
+  <!-- ── AI Chatbot Widget (only when logged in) ── -->
+  {% if session.user %}
+  <div id="chat-widget">
+    <div id="chat-box" style="display:none;">
+      <div id="chat-header">
+        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-base">🤖</div>
+        <div>
+          <p class="text-white font-semibold text-sm">RentBot</p>
+          <p class="text-indigo-200 text-xs">Always here to help</p>
+        </div>
+        <div class="ml-auto w-2 h-2 rounded-full bg-green-400"></div>
+      </div>
+      <div id="chat-messages"></div>
+      <div id="chat-input-row">
+        <input id="chat-input" type="text" placeholder="Ask me anything…" autocomplete="off" />
+        <button id="chat-send" aria-label="Send">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </button>
+      </div>
+    </div>
+    <button id="chat-toggle" aria-label="Open chat">
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+    </button>
+  </div>
+  <script src="{{ url_for('static', filename='js/chatbot.js') }}"></script>
+  {% endif %}
+
+  <script>
+    function toggleMenu() {
+      document.getElementById("user-dropdown").classList.toggle("hidden");
+    }
+    document.addEventListener("click", (e) => {
+      const wrap = document.getElementById("user-menu-wrap");
+      if (wrap && !wrap.contains(e.target)) {
+        document.getElementById("user-dropdown")?.classList.add("hidden");
+      }
+    });
+  </script>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,205 @@
+{% extends "base.html" %}
+{% block title %}Create Account — StudentRent{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] flex items-center justify-center py-6">
+  <div class="w-full max-w-md">
+
+    <!-- Heading -->
+    <div class="text-center mb-8">
+      <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-indigo-200">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900">Create your account</h1>
+      <p class="text-gray-400 text-sm mt-1">Join StudentRent — it's free</p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+      <form method="POST" action="{{ url_for('register') }}" id="reg-form" novalidate>
+
+        <!-- Username -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="username">
+            Username <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </span>
+            <input
+              type="text" id="username" name="username"
+              placeholder="e.g. alex_johnson"
+              autocomplete="username"
+              class="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm transition"
+              value="{{ form_data.username if form_data else '' }}"
+            />
+          </div>
+          <p class="text-xs text-gray-400 mt-1">Letters, numbers, underscores · 3–20 characters</p>
+        </div>
+
+        <!-- Email -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="email">
+            Email Address <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </span>
+            <input
+              type="email" id="email" name="email"
+              placeholder="you@university.ac.ke"
+              autocomplete="email"
+              class="w-full border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm transition"
+              value="{{ form_data.email if form_data else '' }}"
+            />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="mb-5">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="password">
+            Password <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </span>
+            <input
+              type="password" id="password" name="password"
+              placeholder="Min. 6 characters"
+              autocomplete="new-password"
+              class="w-full border border-gray-200 rounded-xl pl-10 pr-12 py-3 text-sm transition"
+            />
+            <button type="button" onclick="togglePw('password')" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500 transition" tabindex="-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            </button>
+          </div>
+          <!-- Strength meter -->
+          <div class="mt-2 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+            <div id="strength-bar" class="h-full rounded-full transition-all duration-300 w-0"></div>
+          </div>
+          <p id="strength-label" class="text-xs text-gray-300 mt-1">Enter a password</p>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="confirm_password">
+            Confirm Password <span class="text-red-500">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            </span>
+            <input
+              type="password" id="confirm_password" name="confirm_password"
+              placeholder="Re-enter your password"
+              autocomplete="new-password"
+              class="w-full border border-gray-200 rounded-xl pl-10 pr-12 py-3 text-sm transition"
+            />
+            <span id="match-icon" class="absolute right-3.5 top-1/2 -translate-y-1/2 hidden"></span>
+          </div>
+        </div>
+
+        <!-- Errors -->
+        {% if errors %}
+        <div class="mb-5 p-4 bg-red-50 border border-red-100 rounded-xl">
+          <ul class="space-y-0.5">
+            {% for e in errors %}
+            <li class="flex items-center gap-2 text-sm text-red-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+              {{ e }}
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          class="w-full bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 text-white font-semibold py-3.5 rounded-xl shadow transition active:scale-95 flex items-center justify-center gap-2 text-sm"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+          Create Account
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="flex items-center gap-3 my-6">
+        <div class="flex-1 h-px bg-gray-100"></div>
+        <span class="text-xs text-gray-300">or</span>
+        <div class="flex-1 h-px bg-gray-100"></div>
+      </div>
+
+      <p class="text-center text-sm text-gray-500">
+        Already have an account?
+        <a href="{{ url_for('login') }}" class="text-indigo-600 font-semibold hover:underline">Sign in</a>
+      </p>
+    </div>
+
+    <p class="text-center text-xs text-gray-300 mt-5">
+      StudentRent — connecting students across campus 🎓
+    </p>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  /* ── Password visibility toggle ── */
+  function togglePw(id) {
+    const input = document.getElementById(id);
+    input.type = input.type === "password" ? "text" : "password";
+  }
+
+  /* ── Strength meter ── */
+  const pwInput    = document.getElementById("password");
+  const bar        = document.getElementById("strength-bar");
+  const label      = document.getElementById("strength-label");
+  const confirmPw  = document.getElementById("confirm_password");
+  const matchIcon  = document.getElementById("match-icon");
+
+  const levels = [
+    { color: "bg-red-400",    text: "Too short",  width: "15%" },
+    { color: "bg-orange-400", text: "Weak",       width: "35%" },
+    { color: "bg-yellow-400", text: "Fair",       width: "60%" },
+    { color: "bg-green-400",  text: "Good",       width: "80%" },
+    { color: "bg-emerald-500",text: "Strong! ✅", width: "100%" },
+  ];
+
+  pwInput.addEventListener("input", () => {
+    const v = pwInput.value;
+    let score = 0;
+    if (v.length >= 6)  score++;
+    if (v.length >= 10) score++;
+    if (/[A-Z]/.test(v)) score++;
+    if (/[0-9]/.test(v)) score++;
+    if (/[^A-Za-z0-9]/.test(v)) score++;
+
+    const lvl = v.length === 0 ? null : levels[Math.min(score, 4)];
+    if (!lvl) {
+      bar.className = "h-full rounded-full transition-all duration-300 w-0";
+      label.textContent = "Enter a password";
+      label.className = "text-xs text-gray-300 mt-1";
+    } else {
+      bar.className = `h-full rounded-full transition-all duration-300 ${lvl.color}`;
+      bar.style.width = lvl.width;
+      label.textContent = lvl.text;
+      label.className = "text-xs mt-1 " + (score <= 1 ? "text-red-400" : score <= 2 ? "text-orange-400" : score <= 3 ? "text-yellow-500" : "text-green-600");
+    }
+  });
+
+  /* ── Confirm password match indicator ── */
+  confirmPw.addEventListener("input", () => {
+    if (!confirmPw.value) { matchIcon.classList.add("hidden"); return; }
+    matchIcon.classList.remove("hidden");
+    if (confirmPw.value === pwInput.value) {
+      matchIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+    } else {
+      matchIcon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>`;
+    }
+  });
+</script>
+{% endblock %}

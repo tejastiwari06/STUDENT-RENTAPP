@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% block title %}Post a Rental Request — StudentRent{% endblock %}
+
+{% block content %}
+<!-- Hero Strip -->
+<div class="hero-strip rounded-2xl px-8 py-10 mb-10 text-white flex flex-col sm:flex-row items-center justify-between gap-6">
+  <div>
+    <h1 class="text-3xl font-bold tracking-tight mb-1">Find or share a rental</h1>
+    <p class="text-indigo-100 text-base">Post what you need — fellow students will see it instantly.</p>
+  </div>
+  <a href="/dashboard" class="shrink-0 inline-flex items-center gap-2 bg-white text-indigo-600 font-semibold px-5 py-2.5 rounded-xl shadow hover:shadow-md hover:bg-indigo-50 transition text-sm">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h7"/></svg>
+    View Dashboard
+  </a>
+</div>
+
+<!-- Form Card -->
+<div class="max-w-2xl mx-auto">
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+    <div class="flex items-center gap-3 mb-7">
+      <div class="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      </div>
+      <div>
+        <h2 class="font-bold text-lg text-gray-900">New Rental Request</h2>
+        <p class="text-gray-400 text-sm">Fill in the details below to post your request</p>
+      </div>
+    </div>
+
+    <form method="POST" action="/submit" id="rent-form" novalidate>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+        <!-- Name -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="name">Full Name <span class="text-red-500">*</span></label>
+          <input
+            type="text" id="name" name="name" required
+            placeholder="e.g. Alex Johnson"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm transition"
+            value="{{ form_data.name if form_data else '' }}"
+          />
+        </div>
+
+        <!-- Phone -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="phone">
+            Phone Number <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="tel" id="phone" name="phone" required
+            placeholder="e.g. 0712345678"
+            pattern="[0-9]{7,15}"
+            inputmode="numeric"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm transition"
+            value="{{ form_data.phone if form_data else '' }}"
+          />
+          <p class="text-xs text-gray-400 mt-1">Digits only · 7–15 characters</p>
+        </div>
+
+        <!-- Location -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="location">Location <span class="text-red-500">*</span></label>
+          <input
+            type="text" id="location" name="location" required
+            placeholder="e.g. Block C, Main Campus"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm transition"
+            value="{{ form_data.location if form_data else '' }}"
+          />
+        </div>
+
+        <!-- Time -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="time">Time / Duration <span class="text-red-500">*</span></label>
+          <input
+            type="text" id="time" name="time" required
+            placeholder="e.g. Mon–Fri, 6 PM–10 PM"
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm transition"
+            value="{{ form_data.time if form_data else '' }}"
+          />
+        </div>
+
+        <!-- Cost -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="cost">Cost (KES) <span class="text-red-500">*</span></label>
+          <div class="relative">
+            <span class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm font-medium">KES</span>
+            <input
+              type="number" id="cost" name="cost" required min="0"
+              placeholder="500"
+              class="w-full border border-gray-200 rounded-xl pl-12 pr-4 py-3 text-sm transition"
+              value="{{ form_data.cost if form_data else '' }}"
+            />
+          </div>
+        </div>
+
+        <!-- Purpose -->
+        <div class="sm:col-span-2">
+          <label class="block text-sm font-medium text-gray-700 mb-1.5" for="purpose">Purpose / Description <span class="text-red-500">*</span></label>
+          <textarea
+            id="purpose" name="purpose" required rows="3"
+            placeholder="Describe what you're renting or offering — e.g. a quiet study room near campus for exam prep..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm transition resize-none"
+          >{{ form_data.purpose if form_data else '' }}</textarea>
+        </div>
+
+      </div>
+
+      <!-- Errors -->
+      {% if errors %}
+        <div class="mt-5 p-4 bg-red-50 border border-red-100 rounded-xl">
+          <p class="text-sm font-semibold text-red-700 mb-1">Please fix the following:</p>
+          <ul class="list-disc list-inside text-sm text-red-600 space-y-0.5">
+            {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+
+      <button
+        type="submit"
+        class="mt-7 w-full bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-600 hover:to-violet-600 text-white font-semibold py-3.5 rounded-xl shadow transition active:scale-95 flex items-center justify-center gap-2 text-sm"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        Post Rental Request
+      </button>
+    </form>
+  </div>
+
+  <!-- Tips -->
+  <div class="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
+    {% for icon, tip in [('📍','Be specific about your location for faster matches'), ('💡','Add your budget range to attract the right offers'), ('⏰','Include exact times so students can plan ahead')] %}
+    <div class="bg-white border border-gray-100 rounded-xl p-4 text-center shadow-sm">
+      <p class="text-xl mb-1">{{ icon }}</p>
+      <p class="text-xs text-gray-500 leading-relaxed">{{ tip }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  const form  = document.getElementById("rent-form");
+  const phone = document.getElementById("phone");
+
+  /* Digits-only enforcement */
+  phone.addEventListener("input", () => {
+    phone.value = phone.value.replace(/\D/g, "");
+  });
+
+  /* Client-side validation before submit */
+  form.addEventListener("submit", e => {
+    const digits = phone.value.replace(/\D/g, "");
+    if (digits.length < 7 || digits.length > 15) {
+      e.preventDefault();
+      phone.classList.add("border-red-400", "bg-red-50");
+      phone.focus();
+      const msg = document.createElement("p");
+      msg.className = "text-xs text-red-500 mt-1";
+      msg.textContent = "Phone must be 7–15 digits.";
+      if (!phone.nextSibling || phone.nextSibling.tagName !== "P") {
+        phone.parentNode.insertBefore(msg, phone.nextSibling);
+      }
+      return;
+    }
+    const btn = form.querySelector("button[type=submit]");
+    btn.disabled = true;
+    btn.innerHTML = `<svg class="animate-spin w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="white" stroke-width="4"/><path class="opacity-75" fill="white" d="M4 12a8 8 0 018-8v8z"/></svg>Posting…`;
+  });
+</script>
+{% endblock %}
