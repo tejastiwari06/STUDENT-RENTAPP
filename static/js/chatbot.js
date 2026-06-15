@@ -1,5 +1,5 @@
 /* ────────────────────────────────────────────────────────────
-   Student Rent App — AI Chatbot (rule-based simulation)
+   Hanashi Kikuyo — AI Chatbot (rule-based simulation)
    ──────────────────────────────────────────────────────────── */
 
 const KB = [
@@ -65,7 +65,7 @@ const KB = [
   },
   {
     patterns: ["thank", "thanks", "appreciate", "great", "awesome", "perfect"],
-    response: "You're welcome! 😊 Happy to help. Let me know if you have any other questions about the Student Rent App!"
+    response: "You're welcome! 😊 Happy to help. Let me know if you have any other questions about Hanashi Kikuyo!"
   },
   {
     patterns: ["bye", "goodbye", "see you", "later", "exit"],

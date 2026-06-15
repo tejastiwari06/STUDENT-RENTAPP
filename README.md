@@ -1,4 +1,4 @@
-# Student Rent App
+# Hanashi Kikuyo
 
 A professional student rental request platform built with Python Flask and Firebase.
 

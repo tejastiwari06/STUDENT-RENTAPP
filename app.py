@@ -363,6 +363,6 @@ def not_found(e):
 if __name__ == "__main__":
     debug = os.getenv("FLASK_DEBUG", "True").lower() in ("true", "1", "yes")
     port  = int(os.getenv("PORT", 5000))
-    print(f"\n🚀 StudentRent running → http://localhost:{port}")
+    print(f"\n🚀 Hanashi Kikuyo running → http://localhost:{port}")
     print(f"   Firebase: {'✅ connected' if USE_FIREBASE else '⚠️  demo mode (no Firebase)'}\n")
     app.run(debug=debug, host="0.0.0.0", port=port)
